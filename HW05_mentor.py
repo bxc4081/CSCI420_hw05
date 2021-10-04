@@ -23,7 +23,14 @@ def readData(fileName):
         dataArray.append(data)
     return dataArray
 
-
+# decision tree criteria:
+# - binary splits
+# - leaf node should have at least 3 records
+# - maximum depth of 26
+# - weighted gini index for best split
+# - stop recursing if there are less than 3 data points
+# - stop recursing if the node is greater than or equal to 95% one class or the other
+# - stop recursing if the tree depth has greater than or equal to 26 levels
 
 def main():
     trainingDataFile = 'Abominable_Data_HW_LABELED_TRAINING_DATA__v740.csv'
