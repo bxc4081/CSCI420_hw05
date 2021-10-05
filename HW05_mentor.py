@@ -2,6 +2,9 @@
 # CSCI 420
 
 
+# global variables
+header = ["age", "height", "bang length", "tail length", "hair length", "reach", "earlobes"]
+
 # read and quantize the data
 def readData(fileName):
     file = open(fileName)
@@ -31,6 +34,37 @@ def readData(fileName):
 # - stop recursing if there are less than 3 data points
 # - stop recursing if the node is greater than or equal to 95% one class or the other
 # - stop recursing if the tree depth has greater than or equal to 26 levels
+def decisionTree(data, depth, attribute):
+    AssamPercent = getPercentageOfClass(data)[0]
+    BhuttanPercent = getPercentageOfClass(data)[1]
+    if depth >= 26 or len(data) <= 3 or AssamPercent > .95 or BhuttanPercent > .95:
+        # This is a leaf node
+        print(header[attribute] + ' node')
+        print('Assam: ' + str(AssamPercent))
+        print('Bhuttan: ' + str(BhuttanPercent))
+    else:
+        # Stopping criteria not met
+        firstAttribute = 0
+        firstThreshold = -1
+        goodness = float('inf')
+        for attributeNumber in range(0, 7):
+            findBestSplit(data, attributeNumber)
+
+# we are splitting the data based on the weighted gini index
+def findBestSplit(data, attributeNumber):
+    
+
+def getPercentageOfClass(data):
+    total = 0
+    Assam = 0
+    Bhuttan = 0
+    for row in data:
+        if row[-1] == 1:
+            Bhuttan += 1
+        else:
+            Assam += 1
+        total += 1
+    return Assam/total, Bhuttan/total
 
 def main():
     trainingDataFile = 'Abominable_Data_HW_LABELED_TRAINING_DATA__v740.csv'
