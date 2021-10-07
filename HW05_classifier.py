@@ -1,11 +1,30 @@
 import sys
+def readData(fileName):
+    file = open(fileName)
+    dataArray = []
+    file.readline()
+    for line in file:
+        data = line.split(',')
+        # quantize age
+        data[0] = round(float(data[0])/2) * 2
+        # quantize height
+        data[1] = round(float(data[1])/5) * 5
+        # quantize everything else
+        data[2] = round(float(data[2]))
+        data[3] = round(float(data[3]))
+        data[4] = round(float(data[4]))
+        data[5] = round(float(data[5]))
+        data[6] = int(data[6])
+        data[8] = data[8].strip()
+        dataArray.append(data)
+    return dataArray
 fileName = sys.argv[1]
 fileOpened = open(fileName, "r")
 fileOpened.readline()
 classificationFile = open("HW05_MyClassifications.csv", "w")
 indexDict = {"age":0, "height": 1, "tail length":2 , "hair length":3 , "bang length": 4, "reach": 5, "earlobes": 6}
-for line in fileOpened:
-    line = line.strip().split(',')
+dataArray = readData(fileName)
+for line in dataArray:
     if float(line[indexDict['earlobes']]) <= 0:
       if float(line[indexDict['hair length']]) <= 10:
         if float(line[indexDict['bang length']]) <= 6:
