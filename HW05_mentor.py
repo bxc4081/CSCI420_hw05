@@ -5,8 +5,8 @@
 
 
 # global variables
-header = ["age", "height", "bang length", "tail length", "hair length", "reach", "earlobes"]
-header_dict = {"age":0, "height": 1, "bang length":2 , "tail length":3 , "hair length": 4, "reach": 5, "earlobes": 6}
+header = ["age", "height", "tail length", "hair length", "bang length", "reach", "earlobes"]
+header_dict = {"age":0, "height": 1, "tail length":2 , "hair length":3 , "bang length": 4, "reach": 5, "earlobes": 6}
 
 # read and quantize the data
 def readData(fileName):
