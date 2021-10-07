@@ -34,6 +34,7 @@ def readData(fileName):
 # - stop recursing if there are less than 3 data points
 # - stop recursing if the node is greater than or equal to 95% one class or the other
 # - stop recursing if the tree depth has greater than or equal to 26 levels
+
 def decisionTree(data, depth, attribute):
     AssamPercent = getPercentageOfClass(data)[0]
     BhuttanPercent = getPercentageOfClass(data)[1]
