@@ -1,9 +1,12 @@
 # Brandon Chen & Jack Xu
 # CSCI 420
+# Bhutan = +1
+# Assam = -1
 
 
 # global variables
 header = ["age", "height", "bang length", "tail length", "hair length", "reach", "earlobes"]
+header_dict = {"age":0, "height": 1, "bang length":2 , "tail length":3 , "hair length": 4, "reach": 5, "earlobes": 6}
 
 # read and quantize the data
 def readData(fileName):
@@ -35,27 +38,94 @@ def readData(fileName):
 # - stop recursing if the node is greater than or equal to 95% one class or the other
 # - stop recursing if the tree depth has greater than or equal to 26 levels
 
-def decisionTree(data, depth, attribute):
+def decisionTree(data, depth):
     AssamPercent = getPercentageOfClass(data)[0]
     BhuttanPercent = getPercentageOfClass(data)[1]
     if depth >= 26 or len(data) <= 3 or AssamPercent > .95 or BhuttanPercent > .95:
         # This is a leaf node
-        print(header[attribute] + ' node')
+        # print(header[attribute] + ' node')
         print('Assam: ' + str(AssamPercent))
         print('Bhuttan: ' + str(BhuttanPercent))
     else:
         # Stopping criteria not met
-        firstAttribute = 0
-        firstThreshold = -1
-        goodness = float('inf')
+        currBestAttributeThreshold, currBestAttributeGini = float("inf"), float("inf")
+        currBestAttribute = ""
+        currBestLessThanSplit = []
+        currBestGreaterThanSplit = []
         # for each attribute, find the best split based on the weighted gini index
-        for attributeNumber in range(0, 7):
-            findBestSplit(data, attributeNumber)
+        for attribute in header_dict:
+            bestAttributeSplit = findBestSplit(data, attribute)
+            #Check the Weighted gini index
+            if (bestAttributeSplit[1] < currBestAttributeGini):
+                #bestAttributeSplit = [threshold, Gini, lessThanSplit, greaterThanSplit]
+                currBestAttribute = attribute
+                currBestAttributeThreshold = bestAttributeSplit[0]
+                currBestAttributeGini = bestAttributeSplit[1]
+                currBestLessThanSplit = bestAttributeSplit[2]
+                currBestGreaterThanSplit = bestAttributeSplit[3]
+        #Now we have found the best attribute with the lowest minimum weighted gini index
+        #Find the split again
+        print("At depth = {}, our best attribute is {} and threshold val is {}".format(depth, currBestAttribute, currBestAttributeThreshold))
+        depth += 1
+        decisionTree(currBestLessThanSplit, depth)
+        decisionTree(currBestGreaterThanSplit, depth)
+
+
 
 # we are splitting the data based on the weighted gini index
-def findBestSplit(data, attributeNumber):
-    min, max = getRangeOfData(data)
-    for val in range(min, max+1):
+def findBestSplit(aggregateData, attribute):
+    attributeIndex = header_dict[attribute]
+    min, max = getRangeOfData(aggregateData)
+    currMinGiniIndex = float("inf")
+    currThreshold = -1
+    # print(data)
+    for thresholdVal in range(min, max+1):
+        #split the data
+        #Greater than = right split
+        #Less than equal to = left split
+        greater_than = []
+        less_than_equal_to = []
+        for currData in aggregateData:
+            currAttributeVal = currData[attributeIndex]
+            if (currAttributeVal > thresholdVal):
+                greater_than.append(currData)
+            else:
+                less_than_equal_to.append(currData)
+        #Finished with current threshold split
+        #Calculate the weighted gini index
+        weightedGiniIndex = findWeightedGiniIndex(less_than_equal_to, greater_than)
+        if (weightedGiniIndex < currMinGiniIndex):
+            currMinGiniIndex = weightedGiniIndex
+            currThreshold = thresholdVal
+    return currThreshold, currMinGiniIndex, less_than_equal_to, greater_than
+
+def findWeightedGiniIndex(lessThanEqualTo, greaterThan):
+    #Find the weighted Gini Index
+    lessThanSplitGiniVal = findGiniIndex(lessThanEqualTo)
+    greaterThanSplitGiniVal = findGiniIndex(greaterThan)
+
+    totalLen = len(lessThanEqualTo) + len(greaterThan)
+    lessThanEqualToWeighted = len(lessThanEqualTo) / totalLen * lessThanSplitGiniVal
+    greaterThanWeighted = len(greaterThan) / totalLen * greaterThanSplitGiniVal
+
+    return lessThanEqualToWeighted + greaterThanWeighted
+
+def findGiniIndex(splitArray):
+    #Find C0 aka Bhutan aka +1
+    #Find C1 aka Assam aka -1
+    bhutanCount = 0
+    assamCount = 0
+    for currElement in splitArray:
+        if (currElement[-1] == "+1"):
+            bhutanCount += 1
+        else:
+            assamCount += 1
+    bhutanCountPerc = bhutanCount / len(splitArray)
+    assamCountPerc = assamCount / len(splitArray)
+    bhutanCountSquared = bhutanCountPerc * bhutanCountPerc
+    assamCountSquared = assamCountPerc * assamCountPerc
+    giniVal = 1 - bhutanCountSquared - assamCountSquared
+    return giniVal
         
 
 def getRangeOfData(data, attributeNumber):
@@ -83,6 +153,8 @@ def getPercentageOfClass(data):
 def main():
     trainingDataFile = 'Abominable_Data_HW_LABELED_TRAINING_DATA__v740.csv'
     dataArray = readData(trainingDataFile)
+    findBestSplit(dataArray, )
+    print(dataArray)
     
 
 if __name__ == '__main__':
