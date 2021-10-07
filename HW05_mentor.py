@@ -38,19 +38,20 @@ def readData(fileName):
 # - stop recursing if the node is greater than or equal to 95% one class or the other
 # - stop recursing if the tree depth has greater than or equal to 26 levels
 
-def decisionTree(data, depth):
+def decisionTree(data, depth, outputFilePointer):
+    frontIndexSpacing = "  " * depth
     AssamPercent = getPercentageOfClass(data)
     BhuttanPercent = 1 - AssamPercent
-    # print(data)
-    # print(AssamPercent, BhuttanPercent)
     if depth >= 26 or len(data) <= 3 or AssamPercent > .95 or BhuttanPercent > .95:
         # This is a leaf node
-        # print(header[attribute] + ' node')
-        # print(AssamPercent)
-        # print(BhuttanPercent)
-        print(data)
-        print('Assam: ' + str(AssamPercent))
-        print('Bhuttan: ' + str(BhuttanPercent))
+        if (BhuttanPercent > .5):
+            # printStatement = frontIndexSpacing + "print('+1')\n"
+            printStatement = frontIndexSpacing + "bhuttan += 1\n"
+            outputFilePointer.write(printStatement)
+        else:
+            # printStatement = frontIndexSpacing + "print('-1')\n"
+            printStatement = frontIndexSpacing + "assam += 1\n"
+            outputFilePointer.write(printStatement)
         return
     else:
         # Stopping criteria not met
@@ -72,10 +73,15 @@ def decisionTree(data, depth):
         #Now we have found the best attribute with the lowest minimum weighted gini index
         #Find the split again
         print("At depth = {}, our best attribute is {} and threshold val is {}".format(depth, currBestAttribute, currBestAttributeThreshold))
-        depth += 1
-        decisionTree(currBestLessThanSplit, depth)
-        decisionTree(currBestGreaterThanSplit, depth)
+        formatOutputString = frontIndexSpacing +  "if '{}' <= {}:\n".format(currBestAttribute, currBestAttributeThreshold)
+        outputFilePointer.write(formatOutputString)
+        decisionTree(currBestLessThanSplit, depth + 1, outputFilePointer)
+        elseFormatString = frontIndexSpacing + "else:\n"
+        outputFilePointer.write(elseFormatString)
+        decisionTree(currBestGreaterThanSplit, depth + 1, outputFilePointer)
 
+
+# def formattingOutputString(depth, attribute, threshold):
 
 
 # we are splitting the data based on the weighted gini index
@@ -169,10 +175,23 @@ def getPercentageOfClass(data):
         total += 1
     return Assam/total
 
+
+
+def writeClassifierHeader(filePointer):
+    string = """import sys
+fileName = sys.argv[1]
+fileOpened = open(fileName, "r")
+for line in fileOpened:
+    line = line.strip()"""
+    filePointer.write(string)
+
+
 def main():
-    trainingDataFile = 'Test_suite_C_tail.csv'
+    trainingDataFile = 'Abominable_Data_HW_LABELED_TRAINING_DATA__v740.csv'
     dataArray = readData(trainingDataFile)
-    decisionTree(dataArray, 0)
+    trainedFilePointer = open("HW05_classifier.py", "w")
+    writeClassifierHeader(trainedFilePointer)
+    # decisionTree(dataArray, 0, trainedFilePointer)
     # findBestSplit(dataArray, )
     # print(dataArray)
     
