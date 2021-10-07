@@ -39,11 +39,14 @@ def readData(fileName):
 # - stop recursing if the tree depth has greater than or equal to 26 levels
 
 def decisionTree(data, depth):
-    AssamPercent = getPercentageOfClass(data)[0]
-    BhuttanPercent = getPercentageOfClass(data)[1]
+    AssamPercent = getPercentageOfClass(data)
+    BhuttanPercent = 1 - AssamPercent
     if depth >= 26 or len(data) <= 3 or AssamPercent > .95 or BhuttanPercent > .95:
         # This is a leaf node
         # print(header[attribute] + ' node')
+        # print(AssamPercent)
+        # print(BhuttanPercent)
+        print(data)
         print('Assam: ' + str(AssamPercent))
         print('Bhuttan: ' + str(BhuttanPercent))
     else:
@@ -75,11 +78,13 @@ def decisionTree(data, depth):
 # we are splitting the data based on the weighted gini index
 def findBestSplit(aggregateData, attribute):
     attributeIndex = header_dict[attribute]
-    min, max = getRangeOfData(aggregateData)
+    min, max = getRangeOfData(aggregateData, attributeIndex)
     currMinGiniIndex = float("inf")
     currThreshold = -1
     # print(data)
     for thresholdVal in range(min, max+1):
+        # print(thresholdVal)
+        # print(attribute)
         #split the data
         #Greater than = right split
         #Less than equal to = left split
@@ -111,6 +116,8 @@ def findWeightedGiniIndex(lessThanEqualTo, greaterThan):
     return lessThanEqualToWeighted + greaterThanWeighted
 
 def findGiniIndex(splitArray):
+    if (len(splitArray) == 0):
+        return 0
     #Find C0 aka Bhutan aka +1
     #Find C1 aka Assam aka -1
     bhutanCount = 0
@@ -139,22 +146,25 @@ def getRangeOfData(data, attributeNumber):
     return min, max
 
 def getPercentageOfClass(data):
+    if (len(data) == 0):
+        return 0
     total = 0
     Assam = 0
     Bhuttan = 0
     for row in data:
-        if row[-1] == 1:
+        if row[-1] == "+1":
             Bhuttan += 1
         else:
             Assam += 1
         total += 1
-    return Assam/total, Bhuttan/total
+    return Assam/total
 
 def main():
-    trainingDataFile = 'Abominable_Data_HW_LABELED_TRAINING_DATA__v740.csv'
+    trainingDataFile = 'Test_suite_A_height.csv'
     dataArray = readData(trainingDataFile)
-    findBestSplit(dataArray, )
-    print(dataArray)
+    decisionTree(dataArray, 0)
+    # findBestSplit(dataArray, )
+    # print(dataArray)
     
 
 if __name__ == '__main__':
