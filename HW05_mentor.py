@@ -46,11 +46,13 @@ def decisionTree(data, depth, outputFilePointer):
         # This is a leaf node
         if (BhuttanPercent > .5):
             printStatement = frontIndexSpacing + "print('+1')\n"
+            printStatement = frontIndexSpacing + "classificationFile.write('+1\\n')\n"
             # printStatement = frontIndexSpacing + "bhuttan += 1\n"
             # printStatement = frontIndexSpacing + "arr.append('+1')\n"
             outputFilePointer.write(printStatement)
         else:
             printStatement = frontIndexSpacing + "print('-1')\n"
+            printStatement = frontIndexSpacing + "classificationFile.write('-1\\n')\n"
             # printStatement = frontIndexSpacing + "assam += 1\n"
             # printStatement = frontIndexSpacing + "arr.append('-1')\n"
             outputFilePointer.write(printStatement)
@@ -184,6 +186,7 @@ def writeClassifierHeader(filePointer):
 fileName = sys.argv[1]
 fileOpened = open(fileName, "r")
 fileOpened.readline()
+classificationFile = open("HW05_MyClassifications.csv", "w")
 indexDict = {"age":0, "height": 1, "tail length":2 , "hair length":3 , "bang length": 4, "reach": 5, "earlobes": 6}
 for line in fileOpened:
     line = line.strip().split(',')\n"""
