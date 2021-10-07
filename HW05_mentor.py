@@ -39,18 +39,20 @@ def readData(fileName):
 # - stop recursing if the tree depth has greater than or equal to 26 levels
 
 def decisionTree(data, depth, outputFilePointer):
-    frontIndexSpacing = "  " * depth
+    frontIndexSpacing = "  " * (depth + 2)
     AssamPercent = getPercentageOfClass(data)
     BhuttanPercent = 1 - AssamPercent
     if depth >= 26 or len(data) <= 3 or AssamPercent > .95 or BhuttanPercent > .95:
         # This is a leaf node
         if (BhuttanPercent > .5):
-            # printStatement = frontIndexSpacing + "print('+1')\n"
-            printStatement = frontIndexSpacing + "bhuttan += 1\n"
+            printStatement = frontIndexSpacing + "print('+1')\n"
+            # printStatement = frontIndexSpacing + "bhuttan += 1\n"
+            # printStatement = frontIndexSpacing + "arr.append('+1')\n"
             outputFilePointer.write(printStatement)
         else:
-            # printStatement = frontIndexSpacing + "print('-1')\n"
-            printStatement = frontIndexSpacing + "assam += 1\n"
+            printStatement = frontIndexSpacing + "print('-1')\n"
+            # printStatement = frontIndexSpacing + "assam += 1\n"
+            printStatement = frontIndexSpacing + "arr.append('-1')\n"
             outputFilePointer.write(printStatement)
         return
     else:
@@ -73,7 +75,7 @@ def decisionTree(data, depth, outputFilePointer):
         #Now we have found the best attribute with the lowest minimum weighted gini index
         #Find the split again
         print("At depth = {}, our best attribute is {} and threshold val is {}".format(depth, currBestAttribute, currBestAttributeThreshold))
-        formatOutputString = frontIndexSpacing +  "if '{}' <= {}:\n".format(currBestAttribute, currBestAttributeThreshold)
+        formatOutputString = frontIndexSpacing +  "if float(line[indexDict['{}']]) <= {}:\n".format(currBestAttribute, currBestAttributeThreshold)
         outputFilePointer.write(formatOutputString)
         decisionTree(currBestLessThanSplit, depth + 1, outputFilePointer)
         elseFormatString = frontIndexSpacing + "else:\n"
@@ -181,8 +183,11 @@ def writeClassifierHeader(filePointer):
     string = """import sys
 fileName = sys.argv[1]
 fileOpened = open(fileName, "r")
+fileOpened.readline()
+arr = []
+indexDict = {"age":0, "height": 1, "tail length":2 , "hair length":3 , "bang length": 4, "reach": 5, "earlobes": 6}
 for line in fileOpened:
-    line = line.strip()"""
+    line = line.strip().split(',')\n"""
     filePointer.write(string)
 
 
@@ -191,7 +196,7 @@ def main():
     dataArray = readData(trainingDataFile)
     trainedFilePointer = open("HW05_classifier.py", "w")
     writeClassifierHeader(trainedFilePointer)
-    # decisionTree(dataArray, 0, trainedFilePointer)
+    decisionTree(dataArray, 0, trainedFilePointer)
     # findBestSplit(dataArray, )
     # print(dataArray)
     
