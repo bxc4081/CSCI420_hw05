@@ -52,7 +52,7 @@ def decisionTree(data, depth, outputFilePointer):
         else:
             printStatement = frontIndexSpacing + "print('-1')\n"
             # printStatement = frontIndexSpacing + "assam += 1\n"
-            printStatement = frontIndexSpacing + "arr.append('-1')\n"
+            # printStatement = frontIndexSpacing + "arr.append('-1')\n"
             outputFilePointer.write(printStatement)
         return
     else:
@@ -184,7 +184,6 @@ def writeClassifierHeader(filePointer):
 fileName = sys.argv[1]
 fileOpened = open(fileName, "r")
 fileOpened.readline()
-arr = []
 indexDict = {"age":0, "height": 1, "tail length":2 , "hair length":3 , "bang length": 4, "reach": 5, "earlobes": 6}
 for line in fileOpened:
     line = line.strip().split(',')\n"""
