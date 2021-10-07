@@ -47,12 +47,25 @@ def decisionTree(data, depth, attribute):
         firstAttribute = 0
         firstThreshold = -1
         goodness = float('inf')
+        # for each attribute, find the best split based on the weighted gini index
         for attributeNumber in range(0, 7):
             findBestSplit(data, attributeNumber)
 
 # we are splitting the data based on the weighted gini index
 def findBestSplit(data, attributeNumber):
-    
+    min, max = getRangeOfData(data)
+    for val in range(min, max+1):
+        
+
+def getRangeOfData(data, attributeNumber):
+    min = float('inf')
+    max = float('-inf')
+    for row in data:
+        if row[attributeNumber] < min:
+            min = row[attributeNumber]
+        if row[attributeNumber] > max:
+            max = row[attributeNumber]
+    return min, max
 
 def getPercentageOfClass(data):
     total = 0
