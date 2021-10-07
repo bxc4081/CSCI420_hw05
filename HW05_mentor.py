@@ -41,6 +41,8 @@ def readData(fileName):
 def decisionTree(data, depth):
     AssamPercent = getPercentageOfClass(data)
     BhuttanPercent = 1 - AssamPercent
+    # print(data)
+    # print(AssamPercent, BhuttanPercent)
     if depth >= 26 or len(data) <= 3 or AssamPercent > .95 or BhuttanPercent > .95:
         # This is a leaf node
         # print(header[attribute] + ' node')
@@ -49,6 +51,7 @@ def decisionTree(data, depth):
         print(data)
         print('Assam: ' + str(AssamPercent))
         print('Bhuttan: ' + str(BhuttanPercent))
+        return
     else:
         # Stopping criteria not met
         currBestAttributeThreshold, currBestAttributeGini = float("inf"), float("inf")
@@ -81,10 +84,10 @@ def findBestSplit(aggregateData, attribute):
     min, max = getRangeOfData(aggregateData, attributeIndex)
     currMinGiniIndex = float("inf")
     currThreshold = -1
+    currBestLessThanSplit = []
+    currBestGreaterThanSplit = []
     # print(data)
     for thresholdVal in range(min, max+1):
-        # print(thresholdVal)
-        # print(attribute)
         #split the data
         #Greater than = right split
         #Less than equal to = left split
@@ -96,15 +99,22 @@ def findBestSplit(aggregateData, attribute):
                 greater_than.append(currData)
             else:
                 less_than_equal_to.append(currData)
+        # print(attribute)
+        # print(thresholdVal)
+        # print(greater_than)
+        # print(less_than_equal_to)
         #Finished with current threshold split
         #Calculate the weighted gini index
         weightedGiniIndex = findWeightedGiniIndex(less_than_equal_to, greater_than)
         if (weightedGiniIndex < currMinGiniIndex):
             currMinGiniIndex = weightedGiniIndex
             currThreshold = thresholdVal
-    return currThreshold, currMinGiniIndex, less_than_equal_to, greater_than
+            currBestLessThanSplit = less_than_equal_to
+            currBestGreaterThanSplit = greater_than
+    return currThreshold, currMinGiniIndex, currBestLessThanSplit, currBestGreaterThanSplit
 
 def findWeightedGiniIndex(lessThanEqualTo, greaterThan):
+    # print(lessThanEqualTo, greaterThan)
     #Find the weighted Gini Index
     lessThanSplitGiniVal = findGiniIndex(lessThanEqualTo)
     greaterThanSplitGiniVal = findGiniIndex(greaterThan)
@@ -160,7 +170,7 @@ def getPercentageOfClass(data):
     return Assam/total
 
 def main():
-    trainingDataFile = 'Test_suite_A_height.csv'
+    trainingDataFile = 'Test_suite_C_tail.csv'
     dataArray = readData(trainingDataFile)
     decisionTree(dataArray, 0)
     # findBestSplit(dataArray, )
