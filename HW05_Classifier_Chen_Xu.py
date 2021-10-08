@@ -15,7 +15,6 @@ def readData(fileName):
         data[4] = round(float(data[4]))
         data[5] = round(float(data[5]))
         data[6] = int(data[6])
-        data[8] = data[8].strip()
         dataArray.append(data)
     return dataArray
 fileName = sys.argv[1]

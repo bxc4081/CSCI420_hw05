@@ -1,5 +1,6 @@
 # Brandon Chen & Jack Xu
 # CSCI 420
+# October 7th, 2021
 # Bhutan = +1
 # Assam = -1
 
@@ -37,7 +38,6 @@ def readData(fileName):
 # - stop recursing if there are less than 3 data points
 # - stop recursing if the node is greater than or equal to 95% one class or the other
 # - stop recursing if the tree depth has greater than or equal to 26 levels
-
 def decisionTree(data, depth, outputFilePointer):
     frontIndexSpacing = "  " * (depth + 2)
     AssamPercent = getPercentageOfClass(data)
@@ -74,8 +74,7 @@ def decisionTree(data, depth, outputFilePointer):
                 currBestAttributeGini = bestAttributeSplit[1]
                 currBestLessThanSplit = bestAttributeSplit[2]
                 currBestGreaterThanSplit = bestAttributeSplit[3]
-        #Now we have found the best attribute with the lowest minimum weighted gini index
-        #Find the split again
+        # Now we have found the best attribute with the lowest minimum weighted gini index
         print("At depth = {}, our best attribute is {} and threshold val is {}".format(depth, currBestAttribute, currBestAttributeThreshold))
         formatOutputString = frontIndexSpacing +  "if float(line[indexDict['{}']]) <= {}:\n".format(currBestAttribute, currBestAttributeThreshold)
         outputFilePointer.write(formatOutputString)
@@ -109,10 +108,6 @@ def findBestSplit(aggregateData, attribute):
                 greater_than.append(currData)
             else:
                 less_than_equal_to.append(currData)
-        # print(attribute)
-        # print(thresholdVal)
-        # print(greater_than)
-        # print(less_than_equal_to)
         #Finished with current threshold split
         #Calculate the weighted gini index
         weightedGiniIndex = findWeightedGiniIndex(less_than_equal_to, greater_than)
@@ -123,8 +118,8 @@ def findBestSplit(aggregateData, attribute):
             currBestGreaterThanSplit = greater_than
     return currThreshold, currMinGiniIndex, currBestLessThanSplit, currBestGreaterThanSplit
 
+# Find the weighted gini index of the two splits by finding the gini indexes of each split
 def findWeightedGiniIndex(lessThanEqualTo, greaterThan):
-    # print(lessThanEqualTo, greaterThan)
     #Find the weighted Gini Index
     lessThanSplitGiniVal = findGiniIndex(lessThanEqualTo)
     greaterThanSplitGiniVal = findGiniIndex(greaterThan)
@@ -135,6 +130,7 @@ def findWeightedGiniIndex(lessThanEqualTo, greaterThan):
 
     return lessThanEqualToWeighted + greaterThanWeighted
 
+# Find the gini index of a set of data by counting the number of assams and the number of bhuttans
 def findGiniIndex(splitArray):
     if (len(splitArray) == 0):
         return 0
@@ -154,7 +150,7 @@ def findGiniIndex(splitArray):
     giniVal = 1 - bhutanCountSquared - assamCountSquared
     return giniVal
         
-
+# Get the range from the minimum threhsold to the maximum threshold
 def getRangeOfData(data, attributeNumber):
     min = float('inf')
     max = float('-inf')
@@ -165,6 +161,7 @@ def getRangeOfData(data, attributeNumber):
             max = row[attributeNumber]
     return min, max
 
+# Get the percentage of Assam in a set of data
 def getPercentageOfClass(data):
     if (len(data) == 0):
         return 0
@@ -179,8 +176,7 @@ def getPercentageOfClass(data):
         total += 1
     return Assam/total
 
-
-
+# Write the header for the classifier file
 def writeClassifierHeader(filePointer):
     string = """import sys
 def readData(fileName):
@@ -199,7 +195,6 @@ def readData(fileName):
         data[4] = round(float(data[4]))
         data[5] = round(float(data[5]))
         data[6] = int(data[6])
-        data[8] = data[8].strip()
         dataArray.append(data)
     return dataArray
 fileName = sys.argv[1]
@@ -211,11 +206,11 @@ dataArray = readData(fileName)
 for line in dataArray:\n"""
     filePointer.write(string)
 
-
+# Main function that quantizes the training data and creates the decision tree
 def main():
     trainingDataFile = 'Abominable_Data_HW_LABELED_TRAINING_DATA__v740.csv'
     dataArray = readData(trainingDataFile)
-    trainedFilePointer = open("HW05_classifier.py", "w")
+    trainedFilePointer = open("HW05_Classifier_Chen_Xu.py", "w")
     writeClassifierHeader(trainedFilePointer)
     decisionTree(dataArray, 0, trainedFilePointer)
     # findBestSplit(dataArray, )
